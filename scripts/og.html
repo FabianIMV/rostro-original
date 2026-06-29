@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..400;1,9..144,300&family=Inter:wght@300;400&display=swap');
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { width: 1200px; height: 630px; }
+  body {
+    width: 1200px; height: 630px;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    text-align: center;
+    background:
+      radial-gradient(120% 90% at 50% 30%, #1d2350 0%, rgba(16,19,42,0) 55%),
+      radial-gradient(140% 120% at 50% 115%, #15183a 0%, #0a0c18 60%),
+      #0a0c18;
+    color: #eef0f7;
+    font-family: 'Inter', sans-serif;
+    position: relative;
+    overflow: hidden;
+  }
+  body::after {
+    content: ""; position: absolute; inset: 0;
+    background: radial-gradient(120% 100% at 50% 50%, transparent 55%, rgba(5,6,15,0.6) 100%);
+  }
+  .halo {
+    position: absolute; width: 620px; height: 620px;
+    top: 30px; left: 290px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(201,182,255,0.16) 0%, rgba(201,182,255,0) 62%);
+  }
+  .wrap { position: relative; z-index: 2; padding: 0 90px; }
+  .label {
+    font-size: 22px; letter-spacing: 0.42em; text-transform: uppercase;
+    color: #8c91b8; font-weight: 400; margin-bottom: 38px;
+  }
+  h1 {
+    font-family: 'Fraunces', serif; font-weight: 300;
+    font-size: 74px; line-height: 1.12; letter-spacing: -0.015em;
+    color: #fff;
+  }
+  .em { font-style: italic; color: #c9b6ff; }
+  .sub {
+    margin-top: 40px; font-size: 26px; font-weight: 300; color: #b9bdd6;
+    letter-spacing: 0.01em;
+  }
+</style>
+</head>
+<body>
+  <div class="halo"></div>
+  <div class="wrap">
+    <div class="label">The Headless Way</div>
+    <h1>No eres una cosa en el mundo.<br />Eres el <span class="em">espacio</span> en que el mundo aparece.</h1>
+    <div class="sub">Una experiencia de tres minutos. No para leer: para mirar.</div>
+  </div>
+</body>
+</html>

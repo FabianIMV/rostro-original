@@ -265,6 +265,50 @@ body::after {
   border-color: var(--accent);
 }
 
+/* ---------- Piezas hermanas (trilogía) ----------
+   Invitaciones opcionales, discretas. Cada una con su aire.
+   El sitio se sostiene solo si nadie las toca. */
+.kin {
+  margin-top: clamp(2.2rem, 7vh, 4rem);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: clamp(1.1rem, 3.5vh, 1.8rem);
+}
+.kin__link {
+  font-family: var(--sans);
+  font-weight: 300;
+  font-size: clamp(0.92rem, 3vw, 1.05rem);
+  line-height: 1.5;
+  letter-spacing: 0.01em;
+  color: var(--ink-faint);
+  text-decoration: none;
+  text-wrap: balance;
+  max-width: 30rem;
+  transition: color 0.6s var(--ease);
+}
+.kin__link:hover,
+.kin__link:focus-visible {
+  color: var(--ink-soft);
+}
+.kin__arrow {
+  display: inline-block;
+  margin-left: 0.15em;
+  color: var(--accent);
+  opacity: 0.7;
+  transition: transform 0.6s var(--ease), opacity 0.6s var(--ease);
+}
+.kin__link:hover .kin__arrow,
+.kin__link:focus-visible .kin__arrow {
+  opacity: 1;
+  transform: translateX(0.25em);
+}
+@media (prefers-reduced-motion: reduce) {
+  .kin__arrow { transition: opacity 0.6s var(--ease); }
+  .kin__link:hover .kin__arrow,
+  .kin__link:focus-visible .kin__arrow { transform: none; }
+}
+
 /* ---------- Indicador de toque para confirmar ---------- */
 .tap-cue {
   margin-top: clamp(1.5rem, 5vh, 3rem);

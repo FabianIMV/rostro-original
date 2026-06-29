@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#0a0c18" />
+
+  <title>Mira por ti mismo · The Headless Way</title>
+  <meta name="description" content="Una experiencia guiada de tres minutos. No para leer: para mirar. Verifica por ti mismo, justo ahora, qué hay en el lugar donde crees tener una cara." />
+
+  <!-- Open Graph / WhatsApp / redes -->
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Mira por ti mismo" />
+  <meta property="og:description" content="Una experiencia guiada de tres minutos. No para leer: para mirar. Verifica por ti mismo qué hay donde crees tener una cara." />
+  <meta property="og:image" content="og-image.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:locale" content="es_ES" />
+
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Mira por ti mismo" />
+  <meta name="twitter:description" content="Una experiencia guiada de tres minutos. No para leer: para mirar." />
+  <meta name="twitter:image" content="og-image.png" />
+
+  <!-- Tipografía -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..500;1,9..144,300..400&family=Inter:wght@300;400;500&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <!-- Fondo: niebla luminosa (WebGL, con fallback CSS) -->
+  <canvas id="fog" aria-hidden="true"></canvas>
+
+  <!-- Punto de luz que sigue al puntero -->
+  <div id="pointer-light" aria-hidden="true"></div>
+
+  <!-- Indicador de progreso -->
+  <div id="progress" aria-hidden="true"><span id="progress-bar"></span></div>
+
+  <main id="experience">
+
+    <!-- ESCENA 0 — Umbral -->
+    <section class="scene scene--threshold" id="scene-0" data-scene="0">
+      <div class="scene__inner">
+        <p class="anchor" data-reveal>Esto no es para leer.<br />Es para mirar.</p>
+        <p class="sub" data-reveal>Tres minutos. Solo necesitas tu atención y un dedo.</p>
+        <button class="btn" id="start-btn" data-reveal>Empezar</button>
+      </div>
+    </section>
+
+    <!-- ESCENA 1 — Apuntar hacia afuera -->
+    <section class="scene" id="scene-1" data-scene="1" data-tap="Lo veo">
+      <div class="scene__inner">
+        <p class="label" data-reveal>Uno</p>
+        <p class="instruction" data-reveal>
+          Apunta con tu dedo a algo al otro lado de la habitación.
+        </p>
+        <p class="instruction instruction--soft" data-reveal>
+          Míralo: tiene color, forma, bordes. Es un objeto, en el espacio, frente a ti.
+        </p>
+      </div>
+    </section>
+
+    <!-- ESCENA 2 — Apuntar al cuerpo -->
+    <section class="scene" id="scene-2" data-scene="2" data-tap="Lo veo">
+      <div class="scene__inner">
+        <p class="label" data-reveal>Dos</p>
+        <p class="instruction" data-reveal>
+          Ahora apunta a tu pie. A tu pierna. A tu pecho.
+        </p>
+        <p class="instruction instruction--soft" data-reveal>
+          Cada uno: un objeto más, con forma y color, ahí frente a ti.
+        </p>
+      </div>
+    </section>
+
+    <!-- ESCENA 3 — Dar la vuelta al dedo (núcleo) -->
+    <section class="scene scene--core" id="scene-3" data-scene="3" data-tap="Sigo mirando">
+      <div class="scene__inner">
+        <p class="label" data-reveal>Tres</p>
+        <p class="instruction" data-reveal>
+          Ahora, lentamente, gira el dedo hacia donde los demás ven tu cara.
+        </p>
+        <p class="instruction instruction--soft" data-reveal>
+          No imagines lo que hay ahí. No recurras al espejo ni a las fotos.
+          Mira directamente lo que el dedo apunta, justo ahora.
+        </p>
+        <p class="instruction question" data-reveal>¿Qué encuentras?</p>
+        <p class="instruction question question--late" data-reveal-late>
+          ¿Un rostro? ¿O un espacio abierto, sin bordes, sin color,
+          donde aparece la habitación entera?
+        </p>
+      </div>
+    </section>
+
+    <!-- ESCENA 4 — El ojo único -->
+    <section class="scene" id="scene-4" data-scene="4" data-tap="Lo veo">
+      <div class="scene__inner">
+        <p class="label" data-reveal>Cuatro</p>
+        <p class="instruction" data-reveal>Cierra un ojo. Ahora el otro.</p>
+        <p class="instruction instruction--soft" data-reveal>
+          No experimentas dos ojos: experimentas un solo campo, sin costuras,
+          sin bordes. Un único centro desde donde se ve todo.
+        </p>
+      </div>
+    </section>
+
+    <!-- ESCENA 5 — Capacidad -->
+    <section class="scene" id="scene-5" data-scene="5" data-tap="Lo veo">
+      <div class="scene__inner">
+        <p class="label" data-reveal>Cinco</p>
+        <p class="instruction" data-reveal>Nota dónde aparecen las cosas.</p>
+        <p class="instruction instruction--soft" data-reveal>
+          Los sonidos aparecen aquí. Los pensamientos aparecen aquí.
+          El cuerpo aparece aquí.
+        </p>
+        <p class="instruction" data-reveal>
+          No estás dentro del mundo: el mundo aparece dentro de este
+          espacio abierto que eres.
+        </p>
+      </div>
+    </section>
+
+    <!-- ESCENA 6 — Cierre -->
+    <section class="scene scene--close" id="scene-6" data-scene="6">
+      <div class="scene__inner">
+        <p class="anchor" data-reveal>
+          No eres una cosa en el mundo.<br />
+          Eres el espacio en que el mundo aparece.
+        </p>
+        <p class="sub sub--em" data-reveal>
+          No me creas nada de esto. Acabas de mirarlo tú.
+          Eres la única autoridad sobre ti.
+        </p>
+        <button class="btn btn--ghost" id="restart-btn" data-reveal>Vuelve a mirar cuando quieras</button>
+        <footer class="credit" data-reveal>
+          Basado en los experimentos de Douglas Harding —
+          <a href="https://www.headless.org" target="_blank" rel="noopener noreferrer">headless.org</a>.
+          De uso libre.
+        </footer>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Pista sutil de avance -->
+  <div id="scroll-hint" aria-hidden="true">
+    <span class="scroll-hint__text">continuar</span>
+    <span class="scroll-hint__arrow"></span>
+  </div>
+
+  <!-- Librerías vía CDN -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/gh/studio-freight/lenis@1.0.42/dist/lenis.min.js"></script>
+  <script src="main.js"></script>
+</body>
+</html>

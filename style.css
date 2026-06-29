@@ -282,6 +282,10 @@ body::after {
   -webkit-appearance: none;
   appearance: none;
   transition: color 0.5s var(--ease), border-color 0.5s var(--ease), background 0.5s var(--ease);
+}
+/* La respiración solo empieza una vez que la pista está revelada,
+   para que no se asome antes de tiempo (sobre todo en la escena núcleo). */
+.tap-cue.is-ready {
   animation: tap-breathe 3.2s ease-in-out infinite;
 }
 .tap-cue:hover,
@@ -336,7 +340,8 @@ body::after {
 /* ---------- Estado inicial de los elementos que revelan ----------
    GSAP aplicará los reveals; este es el estado base.            */
 [data-reveal],
-[data-reveal-late] {
+[data-reveal-late],
+[data-core] {
   opacity: 0;
   filter: blur(8px);
   transform: translateY(14px);

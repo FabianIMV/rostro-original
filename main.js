@@ -44,7 +44,6 @@
 
     scenes.forEach((scene) => {
       const items = scene.querySelectorAll("[data-reveal]");
-      const late = scene.querySelectorAll("[data-reveal-late]");
 
       gsap.to(items, {
         opacity: 1,
@@ -59,24 +58,6 @@
           toggleActions: "play none none reverse",
         },
       });
-
-      // Texto "tardío" (p. ej. la segunda pregunta de la escena núcleo):
-      // aparece tras una pausa larga, invitando a sostener la mirada.
-      if (late.length) {
-        gsap.to(late, {
-          opacity: 1,
-          filter: "blur(0px)",
-          y: 0,
-          duration: 2,
-          ease: "power2.out",
-          delay: 3.2,
-          scrollTrigger: {
-            trigger: scene,
-            start: "top 55%",
-            toggleActions: "play none none reverse",
-          },
-        });
-      }
     });
   }
 
@@ -132,26 +113,152 @@
   /* ------------------------------------------------------------
      4. "Toca para confirmar" en escenas con data-tap
   ------------------------------------------------------------ */
+  function revealCue(cue) {
+    // Aparece la pista y solo entonces empieza a "respirar".
+    if (window.gsap && !prefersReduced) {
+      gsap.to(cue, {
+        opacity: 1,
+        filter: "blur(0px)",
+        y: 0,
+        duration: 1.2,
+        ease: "power2.out",
+        onComplete: () => cue.classList.add("is-ready"),
+      });
+    } else {
+      cue.style.transition = "opacity 1.2s var(--ease)";
+      cue.style.filter = "none";
+      cue.style.transform = "none";
+      requestAnimationFrame(() => (cue.style.opacity = "1"));
+      cue.classList.add("is-ready");
+    }
+  }
+
   function setupTapCues() {
     const tapScenes = document.querySelectorAll(".scene[data-tap]");
     tapScenes.forEach((scene) => {
       const sceneIndex = parseInt(scene.dataset.scene, 10);
+      const isCore = scene.id === "scene-3";
       const cue = document.createElement("button");
       cue.className = "tap-cue";
       cue.type = "button";
       cue.textContent = scene.dataset.tap;
-      cue.setAttribute("data-reveal", "");
+      // La escena núcleo controla su propia pista (aparece tras las opciones).
+      cue.setAttribute(isCore ? "data-core" : "data-reveal", "");
       scene.querySelector(".scene__inner").appendChild(cue);
 
       cue.addEventListener("click", () => {
         cue.classList.add("is-confirmed");
+        cue.classList.remove("is-ready");
         cue.textContent = "✓";
         // Avanza con suavidad a la siguiente escena.
         setTimeout(() => scrollToScene(sceneIndex + 1), 450);
       });
+
+      // Las pistas normales se revelan al entrar la escena en pantalla.
+      if (!isCore) {
+        if (window.gsap && !prefersReduced) {
+          gsap.to(cue, {
+            opacity: 1,
+            filter: "blur(0px)",
+            y: 0,
+            duration: 1.2,
+            ease: "power2.out",
+            scrollTrigger: {
+              trigger: scene,
+              start: "top 55%",
+              toggleActions: "play none none reverse",
+            },
+            onComplete: () => cue.classList.add("is-ready"),
+          });
+        } else {
+          cue.style.opacity = "1";
+          cue.style.filter = "none";
+          cue.style.transform = "none";
+          cue.classList.add("is-ready");
+        }
+      }
     });
   }
   setupTapCues();
+
+  /* ------------------------------------------------------------
+     4b. Escena núcleo (3): pausa real entre la pregunta y las
+         opciones, para que la persona MIRE antes de que se le
+         sugiera qué encontrar.
+         Pregunta → ~6 s de silencio (3 s con movimiento reducido)
+         → opciones → recién entonces la pista para avanzar.
+  ------------------------------------------------------------ */
+  function setupCoreScene() {
+    const scene = document.getElementById("scene-3");
+    if (!scene) return;
+
+    const question = scene.querySelector('[data-core="question"]');
+    const options = scene.querySelector('[data-core="options"]');
+    const useMotion = !!window.gsap && !prefersReduced;
+    const pauseMs = prefersReduced ? 3000 : 6000;
+    let started = false;
+
+    function reveal(el, dur, done) {
+      if (!el) {
+        if (done) done();
+        return;
+      }
+      if (useMotion) {
+        gsap.to(el, {
+          opacity: 1,
+          filter: "blur(0px)",
+          y: 0,
+          duration: dur,
+          ease: "power2.out",
+          onComplete: done,
+        });
+      } else {
+        // Movimiento reducido: solo un fundido de opacidad, sin desplazamiento.
+        el.style.transition = "opacity " + dur + "s var(--ease)";
+        el.style.filter = "none";
+        el.style.transform = "none";
+        requestAnimationFrame(() => (el.style.opacity = "1"));
+        setTimeout(() => done && done(), dur * 1000);
+      }
+    }
+
+    function run() {
+      if (started) return;
+      started = true;
+
+      // 1. La pregunta aparece y queda sola, en silencio.
+      reveal(question, useMotion ? 1.6 : 0.9, () => {
+        // 2. Pausa deliberada, sin nada más visible.
+        setTimeout(() => {
+          // 3. Recién entonces, fundido suave de las opciones.
+          reveal(options, useMotion ? 1.5 : 1.2, () => {
+            // 4. Y solo después aparece la pista para avanzar.
+            const cue = scene.querySelector(".tap-cue");
+            if (cue) revealCue(cue);
+          });
+        }, pauseMs);
+      });
+    }
+
+    // IntersectionObserver: funciona igual con o sin GSAP/ScrollTrigger.
+    if ("IntersectionObserver" in window) {
+      const io = new IntersectionObserver(
+        (entries, obs) => {
+          entries.forEach((e) => {
+            if (e.isIntersecting && e.intersectionRatio >= 0.5) {
+              obs.disconnect();
+              run();
+            }
+          });
+        },
+        { threshold: [0, 0.5, 1] }
+      );
+      io.observe(scene);
+    } else {
+      run();
+    }
+  }
+  setupCoreScene();
 
   /* ------------------------------------------------------------
      5. Punto de luz que sigue al puntero (refuerza "apuntar")
